@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blog List Page</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="files/custom.css" />
+</head>
+<body>
+
+<!-- HEADER BLOCK -->
+<div class="blog-header">
+    <h2 class="heading">Insights & Resources</h2>
+    <p class="sub-heading">Introductory copy that goes underneath the H1 to<br />
+    better contextualise what this does and who it&rsquo;s for.</p>
+</div>
+<!-- END HEADER BLOCK -->
+
+<!-- VUE FRONT END BLOCK -->
+<div id="blog_main" class="blog-container">
+    <div class="blog-listing">
+        <blog-item v-for="($blog, $index) in blogs" :key="$blog.id" :blog_data="$blog"></blog-item>
+    </div>    
+    <div v-if="show_load_more" class="blog-nav">
+        <a href="#" class="blog-btn-load-more" @click="load_more_blog"><% load_more_label -%></a>
+    </div> 
+</div>
+<!-- END VUE FRONT END BLOCK -->
+
+<!-- VUE SCRIPT BLOCK -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<script type="text/x-template" id="blog-item">
+    <div class="blog-item">
+        <div v-if="blog_data.featured_image !== ''" class="blog-item-image">
+            <a :href="blog_data.link"><img :src="blog_data.featured_image" /></a>
+            <span class="blog-image-label">Blog Post</span>
+        </div>
+        <div class="blog-item-title">
+            <a :href="blog_data.link"><% formatted_date -%> | <% blog_data.title -%></a>
+        </div>
+        <div class="blog-item-short-desc" v-html="blog_data.short_description">
+            
+        </div>
+    </div>
+</script>
+<script>
+    var app = new Vue({
+        el: '#blog_main',
+        delimiters: ["<%","-%>"],
+        data() {
+            return {
+                blogs: [],
+                page: 1,
+                is_loading_blogs: false,
+                load_more_label: "Load More",
+                show_load_more: true
+            }
+        },
+        created() {
+            this.load_blog();
+        },
+        methods: {
+            load_more_blog(e) {
+                e.preventDefault();
+                this.load_blog();
+            },
+            load_blog() {
+                const $this = this;
+                if(!$this.is_loading_blogs) {
+                    $this.is_loading_blogs = true;
+                    $this.load_more_label = "Loading..."
+                    const $url = `/wptest/wp-json/wp/v2/posts?page=${$this.page}&per_page=6&_embed`;
+                    axios.get($url).then(response => {
+                        console.log("get blog list: ", response);
+                        if(response.data.length > 0) {
+                            response.data.forEach(function($blog, $index) {
+                                const $parsed_blog = {
+                                    id: $blog.id,
+                                    title: $blog.title.rendered,
+                                    featured_image: $blog._embedded["wp:featuredmedia"] ? $blog._embedded["wp:featuredmedia"][0].media_details.sizes.medium_large.source_url : "",
+                                    short_description: $blog.excerpt.rendered,
+                                    date_created: $blog.date,
+                                    link: $blog.link
+                                }
+                                $this.blogs.push($parsed_blog);
+                                $this.is_loading_blogs = false;
+                                $this.load_more_label = "Load More";
+                            });
+                            $this.page++; 
+                            $this.show_load_more = response.data.length < 6 ? false : true;
+                        }
+                    }).catch(error => {
+                        console.log("error loading blog: ", error);
+                        $this.is_loading_blogs = false;
+                        $this.load_more_label = "Load More";
+                    });
+                }
+            }
+        }
+    });
+
+    Vue.component("blog-item", {
+        template: "#blog-item",                       
+        delimiters: ['<%', '-%>'],
+        props: [
+            "blog_data"
+        ],
+        computed: {
+            formatted_date() {
+                const $date = new Date(this.blog_data.date_created);
+                const $months_in_text = [
+                    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+                ];
+                const $month = $months_in_text[$date.getMonth()];
+                const $day = $date.getDate();
+                const $year = $date.getFullYear();
+                return `${$month} ${$day}, ${$year}`;
+            }
+        }
+    })
+</script>
+<!-- END VUE SCRIPT BLOCK -->
+</body>
+</html>

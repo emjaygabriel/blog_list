@@ -1,0 +1,77 @@
+html, body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.blog-header {
+    background: rgb(0,65,114);
+    background: -moz-linear-gradient(133deg, rgba(0,65,114,1) 0%, rgba(0,196,203,1) 100%);
+    background: -webkit-linear-gradient(133deg, rgba(0,65,114,1) 0%, rgba(0,196,203,1) 100%);
+    background: linear-gradient(133deg, rgba(0,65,114,1) 0%, rgba(0,196,203,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#004172",endColorstr="#00c4cb",GradientType=1);
+    padding: 5rem 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.blog-header .heading { color: #fff; font-size: 3rem; margin-top: 0; margin-bottom: 1.5rem; font-weight: normal; }
+.blog-header .sub-heading { color: #fff; font-size: 1rem; margin-bottom: 0; margin-top: 0; line-height: 1.5; }
+
+.blog-item .blog-item-image {
+    position: relative;
+    margin-bottom: 1rem;
+}
+.blog-item .blog-item-image img { 
+    width: 100%;
+    border-radius: 10px;
+}
+
+.blog-item .blog-item-title a { display: block; margin-bottom: 1.5rem; color: #00C4DB; font-weight: bold; text-decoration: none; }
+.blog-item .blog-item-title a:hover { color: #00C4DB; text-decoration: underline; }
+.blog-item .blog-item-short-desc {
+    color: #004172;
+    font-size: 1.2rem;
+}
+
+.blog-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.blog-listing { 
+    display: grid;
+    column-gap: 50px;
+    row-gap: 50px;
+    grid-template-columns: 450px 450px 450px;
+}
+
+.blog-listing .blog-item {
+    max-width: 450px;
+}
+
+.blog-nav {
+    text-align:center;
+}
+
+.blog-nav .blog-btn-load-more {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: #fff;
+    border-radius: 20px;
+    color: #FE550B;
+    border: 2px solid #FE550B;
+    text-decoration: none;
+    text-align: center;
+}
+
+.blog-image-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    color: #fff;
+    background-color: #FE550B;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-size: 1rem;
+}
